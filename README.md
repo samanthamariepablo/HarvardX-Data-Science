@@ -15,4 +15,15 @@
   </ol>
  </p>
  <p>That's all for now. Be back when I figure out what to do.</p>
+ 
+ <br>
+ 
+ <h5>07/07/21 - 3:47 AM</h5>
+ <p>Learned how to make R Markdowns. I had a hard time making the code chunks and their outputs easy to read on the html knit. Decide on:
+  <ol>
+   <li>whether notebook or markdown is better for this project</li>
+   <li>continue doing what I already know</li>
+  </ol>
+  <p>I'm still not sure how I'll organize my R outputs per course.</p>
+ </p>
 </body>

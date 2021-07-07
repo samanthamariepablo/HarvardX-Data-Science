@@ -1,0 +1,156 @@
+---
+title: 'Section 4: Gapminder'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 4.1 Introduction to Gapminder
+
+## Section 4 Overview
+
+A case study about trends in world health and economics from the Gapminder Foundation will be used.
+
+### Objectives
+
+1.  Understand how Hans Rosling and the Gapminder Foundation use effective data visualization to convey data-based trends.
+
+2.  Apply ggplot2 techniques to answer questions using data.
+
+3.  Understand how fixed scales across plots can ease comparisons.
+
+4.  Modify graphs to improve data visualization.
+
+I will also include content from the assessments on the DataCamp platform.\
+
+------------------------------------------------------------------------
+
+## Case Study: Trends in World Health and Economics
+
+Hans Rosling, through his organization the Gapminder Foundation, set out to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict narratives from sensationalist media coverage. In his TED talks, Hans Rosling revealed actual data-based trends using effective data visualization. The title of these talks are "Best Stats You've Ever Seen" and "New Insights on Poverty". \
+\
+Using data from the Gapminder project, we will answer the following two questions:
+
+1.  Is it a fair characterization of today's world to say that it is divided into a Western rich nations, and the developing world in Africa, Asia, and Latin America?
+
+2.  Has income inequality across countries worsened during the last 40 years?
+
+### Key points
+
+1.  Data visualization can be used to dispel common myths, contradict sensationalist or outdated claims and stories, and educate the public.
+
+2.  We will use real data to answer the following questions about world health and economics.
+
+    -   Is it still fair to consider the world as divided into the West and the developing world?
+
+    -   Has income inequality across countries worsened over the last 40 years?\
+
+------------------------------------------------------------------------
+
+## Gapminder Dataset
+
+We're going to take a quiz created by Hans Rosling in his video New Insights on Poverty. This quiz tests our knowledge regarding differences in child mortality across different countries. Consider the following pairs of countries:\
+
+1.  Sri Lanka or Turkey
+2.  Poland or South Korea
+3.  Malaysia or Russia
+4.  Pakistan or Vietnam
+5.  Thailand or South Africa
+
+Which country do you think had the highest child mortality in 2015? Which pairs do you think are most similar? \
+
+Without data, the non-European countries are typically picked as having higher mortality rates. It is also common to assume that countries considered part of the developing world (Pakistan, Vietnam, Thailand, South Africa) have similarly high mortality rates. \
+
+Now let's answer these questions with data. This is the code from the module:
+
+    # Load packaged and inspect gapminder data.
+    library(tidyverse)
+    library(dslabs)
+    data(gapminder)
+    head(gapminder)
+
+    # Compare infant mortality for each pair of countries. Use the same script to compare the remaining pairs of countries. Just replace the country factors. 
+    gapminder %>%
+      filter(year == 2015 & country %in% c("Sri Lanka", "Turkey")) %>%
+      select(country, infant_mortality)
+
+```{r course1, echo=FALSE, message=FALSE, warning=FALSE}
+# Load packaged and inspect gapminder data.
+library(tidyverse)
+library(dslabs)
+data(gapminder)
+head(gapminder)
+
+# Compare infant mortality for each pair of countries. Use the same script to compare the remaining pairs of countries. Just replace the country factors. 
+gapminder %>%
+  filter(year == 2015 & country %in% c("Sri Lanka", "Turkey")) %>%
+  select(country, infant_mortality)
+```
+
+In my version, I applied the script to each country pairs and assigned them to an object. I used the `cbind()` function to append the tables side by side to avoid clutter. I also included a script for retrieving the infant mortality rates for all countries in one line of code and applied it to an object as well. \
+
+    # Compare infant mortality rates for each country pair and assign to an object
+    pair1 <- gapminder %>%
+      filter(year == 2015 & country %in% c("Sri Lanka", "Turkey")) %>%
+      select(country, infant_mortality)
+    pair2 <- gapminder %>%
+      filter(year == 2015 & country %in% c("Poland", "South Korea")) %>%
+      select(country, infant_mortality)
+    pair3 <- gapminder %>%
+      filter(year == 2015 & country %in% c("Malaysia", "Russia")) %>%
+      select(country, infant_mortality)
+    pair4 <- gapminder %>%
+      filter(year == 2015 & country %in% c("Pakistan", "Vietnam")) %>%
+      select(country, infant_mortality)
+    pair5 <- gapminder %>%
+      filter(year == 2015 & country %in% c("Thailand", "South Africa")) %>%
+      select(country, infant_mortality)
+      
+    # Retrieve mortality rates of all countries
+    gapminder %>% filter(year == 2015 & country %in% 
+                                 c("Sri Lanka", "Turkey", "Poland", "South Korea", "Vietnam", "Thailand", "South Africa")) %>% 
+                  select(country, infant_mortality)
+
+... which returns:
+
+```{r mine1, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Compare infant mortality rates for each country pair and assign to an object
+pair1 <- gapminder %>%
+  filter(year == 2015 & country %in% c("Sri Lanka", "Turkey")) %>%
+  select(country, infant_mortality)
+pair2 <- gapminder %>%
+  filter(year == 2015 & country %in% c("Poland", "South Korea")) %>%
+  select(country, infant_mortality)
+pair3 <- gapminder %>%
+  filter(year == 2015 & country %in% c("Malaysia", "Russia")) %>%
+  select(country, infant_mortality)
+pair4 <- gapminder %>%
+  filter(year == 2015 & country %in% c("Pakistan", "Vietnam")) %>%
+  select(country, infant_mortality)
+pair5 <- gapminder %>%
+  filter(year == 2015 & country %in% c("Thailand", "South Africa")) %>%
+  select(country, infant_mortality)
+cbind(pair1, pair2, pair3, pair4, pair5)
+
+# Retrieve mortality rates of all countries
+gapminder %>% filter(year == 2015 & country %in% 
+                             c("Sri Lanka", "Turkey", "Poland", "South Korea", "Vietnam", "Thailand", "South Africa")) %>% 
+              select(country, infant_mortality)
+```
+
+\
+From here, we see that in each comparisons the European countries have higher rates. We also see that countries from the developing world can have very different rates.
+
+It turns out that most people do worse than if they were just guessing, which implies that we're more than ignorant, we're misinformed. \
+
+### Key points
+
+-   A selection of world health and economics statistics from the Gapminder project can be found in the **dslabs** package as `data(gapminder)`.
+
+-   Most people have misconceptions about world health and economics, which can be addressed by considering real data.

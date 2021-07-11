@@ -33,7 +33,7 @@ I will also include content from the assessments on the DataCamp platform.\
 
 ## Case Study: Trends in World Health and Economics
 
-Hans Rosling, through his organization the Gapminder Foundation, set out to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict narratives from sensationalist media coverage. In his TED talks, Hans Rosling revealed actual data-based trends using effective data visualization. The title of these talks are "Best Stats You've Ever Seen" and "New Insights on Poverty". \
+Hans Rosling, through his organization the Gapminder Foundation, set out to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict narratives from sensationalist media coverage. In his TED talks, Hans Rosling revealed actual data-based trends using effective data visualization. The title of these talks are "Best Stats You've Ever Seen" and "New Insights on Poverty".\
 \
 Using data from the Gapminder project, we will answer the following two questions:
 
@@ -63,9 +63,9 @@ We're going to take a quiz created by Hans Rosling in his video New Insights on 
 4.  Pakistan or Vietnam
 5.  Thailand or South Africa
 
-Which country do you think had the highest child mortality in 2015? Which pairs do you think are most similar? \
+Which country do you think had the highest child mortality in 2015? Which pairs do you think are most similar?\
 
-Without data, the non-European countries are typically picked as having higher mortality rates. It is also common to assume that countries considered part of the developing world (Pakistan, Vietnam, Thailand, South Africa) have similarly high mortality rates. \
+Without data, the non-European countries are typically picked as having higher mortality rates. It is also common to assume that countries considered part of the developing world (Pakistan, Vietnam, Thailand, South Africa) have similarly high mortality rates.\
 
 Now let's answer these questions with data. This is the code from the module:
 
@@ -93,7 +93,7 @@ gapminder %>%
   select(country, infant_mortality)
 ```
 
-In my version, I applied the script to each country pairs and assigned them to an object. I used the `cbind()` function to append the tables side by side to avoid clutter. I also included a script for retrieving the infant mortality rates for all countries in one line of code and applied it to an object as well. \
+In my version, I applied the script to each country pairs and assigned them to an object. I used the `cbind()` function to append the tables side by side to avoid clutter. I also included a script for retrieving the infant mortality rates for all countries in one line of code and applied it to an object as well.\
 
     # Compare infant mortality rates for each country pair and assign to an object
     pair1 <- gapminder %>%
@@ -147,10 +147,144 @@ gapminder %>% filter(year == 2015 & country %in%
 \
 From here, we see that in each comparisons the European countries have higher rates. We also see that countries from the developing world can have very different rates.
 
-It turns out that most people do worse than if they were just guessing, which implies that we're more than ignorant, we're misinformed. \
+It turns out that most people do worse than if they were just guessing, which implies that we're more than ignorant, we're misinformed.\
 
 ### Key points
 
 -   A selection of world health and economics statistics from the Gapminder project can be found in the **dslabs** package as `data(gapminder)`.
 
 -   Most people have misconceptions about world health and economics, which can be addressed by considering real data.
+
+BLAH BLAH BLAH BLAH deal with the formatting later
+
+## Life Expectancy and Fertility Rates
+
+```{r}
+# Section 4.1 Introduction to Gapminder
+# Life Expectancy and Fertility Rates
+
+library(dslabs)
+library(tidyverse)
+library(ggplot2)
+data(gapminder)
+
+# Basic scatterplot of life expectancy versus fertilty
+ds_theme_set()
+filter(gapminder, year == 1962) %>% 
+  ggplot(aes(fertility, life_expectancy)) +
+  geom_point()
+
+# Add color as continent
+filter(gapminder, year == 1962) %>% 
+  ggplot(aes(fertility, life_expectancy, color = continent)) +
+  geom_point()
+```
+
+# Using the Gapminder Dataset
+
+## Faceting
+
+```{r message=FALSE, warning=FALSE}
+# Facet by continent and year
+filter(gapminder, year %in% c(1962, 2012)) %>%
+  ggplot(aes(fertility, life_expectancy, col = continent)) + 
+  geom_point() + 
+  facet_grid(continent ~ year)
+
+# Facet by year only
+filter(gapminder, year %in% c(1962, 2012)) %>%
+  ggplot(aes(fertility, life_expectancy, col = continent)) + 
+  geom_point() + 
+  facet_grid(.~year)
+
+# Facet by year, plots wrapped onto multiple rows
+years <- c(1962, 1980, 1990, 2000, 2012)
+continents <- c("Europe", "Asia")
+
+filter(gapminder, year %in% years & continent %in% continents) %>%
+  ggplot(aes(fertility, life_expectancy, col = continent)) + 
+  geom_point() + 
+  facet_wrap(~year)
+  facet_grid(.~year)
+
+```
+
+### Key points
+
+-   Faceting makes multiple side-by-side plots stratified by some variable. This is a way to ease comparisons.
+
+-   The `facet_grid()` function allows faceting by up to two variables, with rows faceted by one variable and columns faceted by the other variable. To facet by only one variable, use the dot operator as the other variable, as in `facet_grid(.~variable)`.
+
+-   The `facet_wrap()` function facets by one variable and automatically wraps the series of plots so they have readable dimensions.
+
+-   Faceting keeps the axes fixed across all plots, easing comparisons between plots.
+
+-   The data suggest that the developing versus Western world view no longer makes sense in 2012.
+
+## Time Series Plots
+
+
+### Single time series
+
+```{r single time series, message=FALSE, warning=FALSE}
+# Scatterplot of US fertility by year
+gapminder %>% 
+  filter(country == "United States") %>%
+  ggplot(aes(year, fertility)) + 
+  geom_point()
+
+# Line plot of US fertility by year
+gapminder %>% 
+  filter(country == "United States") %>%
+  ggplot(aes(year, fertility)) + 
+  geom_line()
+```
+
+### Multiple time series
+
+``` {r}
+# Line plot fertility time series for two countries - only one line (incorrect)
+countries <- c("South Korea", "Germany")
+gapminder %>% filter(country %in% countries) %>%
+  ggplot(aes(year, fertility)) + 
+  geom_line()
+
+# Line plot fertility time series for two countries - one line per country
+gapminder %>% filter(country %in% countries) %>%
+  ggplot(aes(year, fertility, group = country)) + 
+  geom_line()
+
+# Fertility time series for two countries - lines colored by country
+gapminder %>% filter(country %in% countries) %>%
+  ggplot(aes(year, fertility, col = country)) + 
+  geom_line()
+```
+
+### Adding text labels to a plot
+
+``` {r}
+# Life expectancy series - line colored by country and labeled, no legend
+labels <- data.frame(country = countries, x = c(1975, 1965), y = c(60, 72))
+gapminder %>% filter(country %in% countries) %>%
+  ggplot(aes(year, life_expectancy, col = country)) + 
+  geom_line() + 
+  geom_text(data = labels, aes(x, y, label = country), size = 5) + 
+  theme(legend.position = "none")
+```
+
+### Key points
+
+-   Time series plots have time on the x-axis and a variable of interest on the y-axis.
+
+-   The `geom_line()` geometry connects adjacent data points to form a continuous line. A line plot is appropriate when points are regularly spaced, densely packed and from a single data series.
+
+-   You can plot multiple lines on the same graph. Remember to group or color by a variable so that the lines are plotted 
+
+-   Labeling is usually preferred over legends. However, legends are easier to make and appear by default. Add a label with `geom_text()`, specifying the coordinates where the label should appear on the graph.
+
+## Transformations
+
+``` {r}
+
+```
+
